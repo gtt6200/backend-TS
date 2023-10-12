@@ -3,8 +3,8 @@ process.env.APP_ENV = process.env.APP_ENV || 'development';
 
 import dotenv from 'dotenv';
 import express from 'express';
-import { container } from "./container";
-import { TestService } from './services/test.service';
+import loadContainer from "./container";
+import { loadControllers } from 'awilix-express';
 
 dotenv.config({
     path: `${__dirname}/../config/${process.env.APP_ENV}.env`
@@ -15,17 +15,16 @@ console.log(process.env.APP_FOO);
 
 const app: express.Application = express();
 
-app.get("/", (req, res, err) => {
-    try {
-        res.send("Hola corregido todo");
-    } catch {
-        console.log(err);
-    }
-});
 
-const testService = container.resolve<TestService>('testService');
-console.log(testService.get());
+//container
 
+loadContainer(app);
+
+//controladores
+app.use(loadControllers(
+    'controllers/*.ts',
+    { cwd: __dirname }
+))
 
 export {
     app
