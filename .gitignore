@@ -1,2 +1,4 @@
 /api.wallet/node_modules/
 /api.wallet/config/*.env
+/node_modules
+*.env
