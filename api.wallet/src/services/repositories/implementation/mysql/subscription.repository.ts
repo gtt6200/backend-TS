@@ -1,7 +1,8 @@
 import connector from "../../../../common/persistence/mysql.persistence";
 import { Subscription } from "../../domain/subscription";
+import { SubcriptionRepository } from "../../subscription.repository";
 
-export class SubscriptionRepository {
+export class SubscriptionMySqlRepository implements SubcriptionRepository {
     public async all(): Promise<Subscription[]> {
         const [rows] = await connector.execute(
             'SELECT * FROM wallet_subscription ORDER BY id DESC'
@@ -28,6 +29,13 @@ export class SubscriptionRepository {
         await connector.execute(
             'UPDATE wallet_subscription SET user_id = ?, code = ?, amount = ?, cron = ?, updated_at = ? WHERE id = ?',
             [entry.user_id, entry.code, entry.amount, entry.code, dateNow, entry.id]
+        );
+    }
+    public async remove(id: Number): Promise<void> {
+        const dateNow = Date();
+        await connector.execute(
+            'DELETE wallet_subscription WHERE id = ?',
+            [id]
         );
     }
 }
